@@ -67,7 +67,7 @@ oke:
         code: cat kube-oke-sample.yml; echo cat yml file
 
     - kubectl:
-        name: deploy oke-sample to kubernetes
+        name: deploy oke-sample to kubernetes2
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
