@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  AUTO_INCREMENT=1;
 
+
 ~~~
 
 
