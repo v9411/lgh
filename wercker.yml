@@ -79,3 +79,4 @@ oke:
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
         command: get all
+
