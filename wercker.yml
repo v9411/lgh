@@ -64,18 +64,18 @@ oke:
 
     - script:
         name: "view deployment yaml"
-        code: cat kube-oke-sample.yml
+        code: cat kube-oke-sample.yml; echo cat yml file
 
     - kubectl:
         name: deploy oke-sample to kubernetes
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: apply -f kube-oke-sample.yml
+        command: apply -f kube-oke-sample.yml; echo deployment
 
     - kubectl:
         name: get all
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: get all
+        command: get all; echo get
