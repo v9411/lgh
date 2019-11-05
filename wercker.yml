@@ -2,13 +2,6 @@ box:
  id: node:latest
  ports:
    - "8080"
- 
-dev:
-  steps:
-    - npm-install
-    - internal/watch:
-        code: node app.js
-        reload: true
 
 # Build definition
 build:
@@ -39,7 +32,7 @@ deploy:
         tag: $WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT-oke-sample
 
 #Deploy our container from the Oracle Container Registry to the Oracle Container Engine (Kubernetes)
-deploy-to-cluster:
+oke:
   box:
     id: alpine
     cmd: /bin/sh
