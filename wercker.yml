@@ -61,10 +61,6 @@ oke:
         insecure-skip-tls-verify: true
         command: create secret docker-registry ocirsecret --docker-server=$DOCKER_REGISTRY --docker-email=nobody@oracle.com --docker-username=$DOCKER_USERNAME --docker-password='$OCI_AUTH_TOKEN' --namespace=${KUBERNETES_NAMESPACE}; echo create secret
 
-    - script:
-        name: "config"
-        code: cat kube-oke-sample.yml
-
     - kubectl:
         name: deploy oke-sample to kubernetes
         server: $KUBERNETES_MASTER
