@@ -65,4 +65,3 @@ spec:
         name: oke-sample
     imagePullSecrets:
     - name: ocirsecret 
-	 

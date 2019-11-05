@@ -45,7 +45,7 @@ oke:
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: apply -f kube-namespace-config.yaml; echo apply namespace
+        command: apply -f kube-namespace-config.yml; echo apply namespace
 
     - kubectl:
         name: delete secret
