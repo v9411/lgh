@@ -16,10 +16,9 @@ build:
   steps:
     - script:
         code: export NODE_ENV='testing'
+
     # A step that executes `npm install` command
     - npm-install
-    # A step that executes `npm test` command
-    - npm-test
 
     # A custom script step, name value is used in the UI
     # and the code value contains the command that get executed
@@ -30,19 +29,14 @@ build:
           echo "npm version $(npm -v) running"
 
 #Push the docker image with our built and tested application to the Oracle Container Registry
-myapp:
+deploy:
   steps:
     - internal/docker-push:
         username: $DOCKER_USERNAME
         password: $OCI_AUTH_TOKEN
         repository: $DOCKER_REGISTRY/$DOCKER_REPO
         registry: https://$DOCKER_REGISTRY/v2
-        tag: $WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT-helidon-movie-api-mp
-#        working-dir: /pipeline/source/
-#        ports: 8080
-#        cmd: java -jar target/helidon-movie-api-mp.jar
-
-
+        tag: $WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT-oke-sample
 
 #Deploy our container from the Oracle Container Registry to the Oracle Container Engine (Kubernetes)
 deploy-to-cluster:
@@ -58,51 +52,29 @@ deploy-to-cluster:
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: apply -f kube-namespace-config.yaml
+        command: apply -f kube-namespace-config.yaml; echo apply namespace
 
     - kubectl:
         name: delete secret
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: delete secret wercker --namespace=${KUBERNETES_NAMESPACE}; echo delete registry secret
+        command: delete secret ocirsecret --namespace=${KUBERNETES_NAMESPACE}; echo delete secret
 
     - kubectl:
         name: create secret
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: create secret docker-registry wercker --docker-server=$DOCKER_REGISTRY --docker-email=nobody@oracle.com --docker-username=$DOCKER_USERNAME --docker-password='$OCI_AUTH_TOKEN' --namespace=${KUBERNETES_NAMESPACE}; echo delete registry secret
+        command: create secret docker-registry ocirsecret --docker-server=$DOCKER_REGISTRY --docker-email=nobody@oracle.com --docker-username=$DOCKER_USERNAME --docker-password='$OCI_AUTH_TOKEN' --namespace=${KUBERNETES_NAMESPACE}; echo create secret
 
     - script:
         name: "Visualise Kubernetes config"
-        code: cat kube-helidon-movie-api-mp-config.yml
+        code: cat oke-sample.yml
 
     - kubectl:
-        name: deploy helidon-movie-api-mp to kubernetes
+        name: deploy oke-sample to kubernetes
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: apply -f kube-helidon-movie-api-mp-config.yml
-
-    - script:
-        name: "Visualise Kubernetes config"
-        code: cat kube-springboot-movie-people-api-config.yml
-
-    - kubectl:
-        name: deploy springboot-movie-people-api to kubernetes
-        server: $KUBERNETES_MASTER
-        token: $KUBERNETES_AUTH_TOKEN
-        insecure-skip-tls-verify: true
-        command: apply -f kube-springboot-movie-people-api-config.yml
-
-    - script:
-        name: "Visualise Kubernetes config"
-        code: cat kube-jet-movie-msa-ui-config.yml
-
-    - kubectl:
-        name: deploy jet-movie-msa-ui to kubernetes
-        server: $KUBERNETES_MASTER
-        token: $KUBERNETES_AUTH_TOKEN
-        insecure-skip-tls-verify: true
-        command: apply -f kube-jet-movie-msa-ui-config.yml
+        command: apply -f oke-sample.yml
