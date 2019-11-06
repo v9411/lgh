@@ -53,7 +53,7 @@ oke:
         server: $KUBERNETES_MASTER
         token: $KUBERNETES_AUTH_TOKEN
         insecure-skip-tls-verify: true
-        command: delete secret ocirsecret --namespace=${KUBERNETES_NAMESPACE}
+        command: delete secret ocirsecret --namespace=${KUBERNETES_NAMESPACE}; echo good
 
     - kubectl:
         name: create secret
