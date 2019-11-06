@@ -73,6 +73,7 @@ oke:
         insecure-skip-tls-verify: true
         command: apply -f kube-oke-sample.yml --namespace=${KUBERNETES_NAMESPACE}
 
+
     - kubectl:
         name: get all
         server: $KUBERNETES_MASTER
