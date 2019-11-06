@@ -49,8 +49,8 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: ${DOCKER_REGISTRY}/${DOCKER_REPO}:$WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT
-        name: oke-sample
+      - name: oke-sample
+        image: ${DOCKER_REGISTRY}/${DOCKER_REPO}:$WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT
         env:
         - name: MYSQL_SERVICE_HOST
           value: "129.213.149.203"
@@ -62,7 +62,7 @@ spec:
           value: "sample"
         ports:
         - containerPort: 8080
-        name: oke-sample
+          name: oke-sample
       imagePullSecrets:
       - name: ocirsecret 
 ---
