@@ -34,9 +34,6 @@ deploy:
         password: $OCI_AUTH_TOKEN
         registry: https://$DOCKER_REGISTRY/v2/
         repository: $DOCKER_REGISTRY/$DOCKER_REPO
-#        working-dir: /pipeline/source/
-#        ports: 8080
-#        cmd: npm start
 
 
 #Deploy our container from the Oracle Container Registry to the Oracle Container Engine (Kubernetes)
@@ -47,8 +44,7 @@ oke:
 
   steps:
     - bash-template
-    
-    
+
     - kubectl:
         name: create namespace
         server: ${KUBERNETES_MASTER}
