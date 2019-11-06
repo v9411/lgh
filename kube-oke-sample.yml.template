@@ -44,7 +44,7 @@ spec:
     type: Recreate
   template:
     metadata:
-    labels:
+      labels:
         app: oke-sample
         tier: frontend
     spec:
