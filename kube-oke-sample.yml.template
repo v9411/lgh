@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
       - name: oke-sample
-        image: ${DOCKER_REGISTRY}/${DOCKER_REPO}:$WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT
+        image: ${DOCKER_REGISTRY}/${DOCKER_REPO}
         env:
         - name: MYSQL_SERVICE_HOST
           value: "129.213.149.203"

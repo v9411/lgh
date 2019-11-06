@@ -24,12 +24,16 @@ build:
 #Push the docker image with our built and tested application to the Oracle Container Registry
 deploy:
   steps:
+    - internal/docker-build:
+        dockerfile: Dockerfile
+        image-name: $DOCKER_REGISTRY/$DOCKER_REPO
+
     - internal/docker-push:
         username: $DOCKER_USERNAME
         password: $OCI_AUTH_TOKEN
+        registry: https://$DOCKER_REGISTRY
         repository: $DOCKER_REGISTRY/$DOCKER_REPO
-        registry: https://$DOCKER_REGISTRY/v2
-        tag: $WERCKER_GIT_BRANCH-$WERCKER_GIT_COMMIT
+
 
 #Deploy our container from the Oracle Container Registry to the Oracle Container Engine (Kubernetes)
 oke:
