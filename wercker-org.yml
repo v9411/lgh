@@ -1,0 +1,94 @@
+box:
+ id: node:latest
+ ports:
+   - "8080"
+
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    - script:
+        code: export NODE_ENV='testing'
+
+    # A step that executes `npm install` command
+    - npm-install
+
+    # A custom script step, name value is used in the UI
+    # and the code value contains the command that get executed
+    - script:
+        name: echo nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "npm version $(npm -v) running"
+
+#Push the docker image with our built and tested application to the Oracle Container Registry
+deploy:
+  steps:
+    - internal/docker-build:
+        dockerfile: Dockerfile
+        image-name: oke-sample
+
+    - internal/docker-push:
+        image-name: oke-sample
+        username: $DOCKER_USERNAME
+        password: $OCI_AUTH_TOKEN
+        registry: https://$DOCKER_REGISTRY/v2/
+        repository: $DOCKER_REGISTRY/$DOCKER_REPO
+
+
+#Deploy our container from the Oracle Container Registry to the Oracle Container Engine (Kubernetes)
+oke:
+  box:
+    id: alpine
+    cmd: /bin/sh
+
+  steps:
+    - bash-template
+
+    - kubectl:
+        name: create namespace
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_AUTH_TOKEN
+        insecure-skip-tls-verify: true
+        command: create namespace ${KUBERNETES_NAMESPACE}; echo done
+
+    - kubectl:
+        name: delete secret
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_AUTH_TOKEN
+        insecure-skip-tls-verify: true
+        command: delete secret ocirsecret --namespace=${KUBERNETES_NAMESPACE}; echo done
+
+    - kubectl:
+        name: create secret
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_AUTH_TOKEN
+        insecure-skip-tls-verify: true
+        command: create secret docker-registry ocirsecret --docker-server=$DOCKER_REGISTRY --docker-email=nobody@oracle.com --docker-username=$DOCKER_USERNAME --docker-password='$OCI_AUTH_TOKEN' --namespace=${KUBERNETES_NAMESPACE}
+
+    - script:
+        name: "view deployment yaml"
+        code: cat kube-oke-sample.yml
+
+    - kubectl:
+        name: delete oke-sample of kubernetes
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_AUTH_TOKEN
+        insecure-skip-tls-verify: true
+        command: delete -f kube-oke-sample.yml --namespace=${KUBERNETES_NAMESPACE}
+
+    - kubectl:
+        name: deploy oke-sample to kubernetes
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_AUTH_TOKEN
+        insecure-skip-tls-verify: true
+        command: apply -f kube-oke-sample.yml --namespace=${KUBERNETES_NAMESPACE}
+
+
+    - kubectl:
+        name: get all
+        server: $KUBERNETES_MASTER
+        token: $KUBERNETES_AUTH_TOKEN
+        insecure-skip-tls-verify: true
+        command: get all --namespace=${KUBERNETES_NAMESPACE}
+
