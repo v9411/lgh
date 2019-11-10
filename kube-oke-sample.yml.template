@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
       - name: oke-sample
-        image: https://icn.ocir.io/v2/icn.ocir.io/skimgmt/oke-sample-${KUBERNETES_NAMESPACE}
+        image: https://icn.ocir.io/v2/skimgmt/oke-sample-${KUBERNETES_NAMESPACE}
         env:
         - name: MYSQL_SERVICE_HOST
           value: "132.145.89.83"
