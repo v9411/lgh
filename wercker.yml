@@ -35,6 +35,7 @@ deploy:
         password: 84J1T}z8tPGGOJ-#<ONw
         registry: https://icn.ocir.io/v2/
         repository: skimgmt/oke-sample-$KUBERNETES_NAMESPACE
+        tag: ${WERCKER_GIT_BRANCH}
 
 
 #Deploy our container from the Oracle Container Registry to the Oracle Container Engine (Kubernetes)
